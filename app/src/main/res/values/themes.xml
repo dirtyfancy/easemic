@@ -1,0 +1,11 @@
+<resources>
+    <style name="Theme.PrivateComicLibrary" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.PrivateComicLibrary.OAuthCallback" parent="android:style/Theme.Translucent.NoTitleBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+</resources>

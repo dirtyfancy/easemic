@@ -1,0 +1,5 @@
+{
+  "name": "easemic-oauth-callback",
+  "private": true,
+  "type": "module"
+}

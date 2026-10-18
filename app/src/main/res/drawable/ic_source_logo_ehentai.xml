@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- #D5: the site's own mark — e-hentai.org/favicon.ico (ExHentai serves the identical icon), traced pixel for
+     pixel from the 16x16 original: a dark-red pixel "E-H" on transparent. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="16dp"
+    android:height="16dp"
+    android:viewportWidth="16"
+    android:viewportHeight="16">
+    <path
+        android:fillColor="#660611"
+        android:pathData="M1,2h5v2h-5zM9,2h2v5h-2zM13,2h2v5h-2zM1,4h2v3h-2zM1,7h4v2h-4zM6,7h2v2h-2zM9,7h6v2h-6zM1,9h2v3h-2zM9,9h2v5h-2zM13,9h2v5h-2zM1,12h5v2h-5z" />
+</vector>

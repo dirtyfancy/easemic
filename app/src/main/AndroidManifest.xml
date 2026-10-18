@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <!--
+      Owner bug A14 ("后台下载/上云不稳定"): the Settings "Background tasks"
+      row offers an opt-in deep link to exempt this app from Doze/App Standby
+      so the download/upload pumps' foreground service survives screen-off on
+      OEMs (HONOR/MagicOS phone-verified) that otherwise kill it. Never
+      requested silently — see work/BackgroundPermissions.kt.
+    -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <queries>
+        <intent>
+            <action android:name="android.support.customtabs.action.CustomTabsService" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.settings.MANAGE_UNKNOWN_APP_SOURCES" />
+        </intent>
+        <intent>
+            <action android:name="android.settings.SECURITY_SETTINGS" />
+        </intent>
+        <intent>
+            <action android:name="android.settings.APPLICATION_DETAILS_SETTINGS" />
+        </intent>
+        <!-- API 30+ package visibility for the 应用启动管理 screens. -->
+        <package android:name="com.hihonor.systemmanager" />
+        <package android:name="com.huawei.systemmanager" />
+    </queries>
+
+    <application
+        android:name=".PrivateComicLibraryApplication"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.PrivateComicLibrary">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".CloudflareOAuthCallbackActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PrivateComicLibrary.OAuthCallback">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="com.easemic.app"
+                    android:host="cf"
+                    android:path="/oauth/callback" />
+            </intent-filter>
+            <!-- #C50: drive sign-ins (OneDrive now; Google Drive uses its own reverse-client-id scheme). -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="com.easemic.app"
+                    android:host="auth"
+                    android:path="/onedrive" />
+            </intent-filter>
+            <!-- #C50: Google Drive sign-in: the iOS-type client's reverse-client-id scheme. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- The redirect is <scheme>:/oauth2redirect (no host), so a path cannot be matched here;
+                     DriveRedirectParser checks it. The scheme alone is unique to this client. -->
+                <data android:scheme="com.googleusercontent.apps.227975952622-pq81regsksce5goav8ln8kpleb9nhj2l" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.CloudflareChallengeActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PrivateComicLibrary" />
+        <!-- W7: no android:screenOrientation — every additional locked
+             orientation is a fresh LockedOrientationActivity + DiscouragedApi
+             lint finding, and the gate budget has no room for two more. The
+             WebView sign-in is orientation-agnostic. -->
+        <activity
+            android:name=".ui.EhentaiSignInActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PrivateComicLibrary" />
+        <activity
+            android:name=".ui.ZaimanhuaSignInActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PrivateComicLibrary" />
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            tools:node="merge" />
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.update-fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/update_file_paths" />
+        </provider>
+    </application>
+</manifest>

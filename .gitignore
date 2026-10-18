@@ -1,0 +1,11 @@
+.cloudflare/
+.DS_Store
+.gradle/
+.idea/
+.kotlin/
+.wrangler/
+**/build/
+build/
+cloud/**/.wrangler/
+cloud/**/node_modules/
+local.properties

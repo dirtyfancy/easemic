@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Monochrome layer for themed icons (API 33+): same mark; the system tints it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="21.66"
+        android:translateY="23.70"
+        android:scaleX="0.6"
+        android:scaleY="0.6">
+        <path
+            android:pathData="M22,55 L76,55 C84.5,55 88.5,45.5 83,39 C80,33.5 73,31 66.5,33 C63,24 54,18.5 44.5,20.5 C31.5,23.5 22,35 22,50.5 C22,68.5 34,81 51.5,81 C62,81 70.5,76 76,69"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeWidth="10.5"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>

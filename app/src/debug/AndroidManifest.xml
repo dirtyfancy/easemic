@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <provider
+            android:name="com.easemic.app.feature.library.TestImageContentProvider"
+            android:authorities="${applicationId}.test.image"
+            android:exported="false" />
+        <provider
+            android:name="com.easemic.app.work.ForegroundBlockingContentProvider"
+            android:authorities="${applicationId}.test.foreground"
+            android:exported="false" />
+        <activity
+            android:name="com.easemic.app.work.Api35TimeoutProbeActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+        <activity
+            android:name="com.easemic.app.acceptance.E15ComposeHostActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+    </application>
+</manifest>

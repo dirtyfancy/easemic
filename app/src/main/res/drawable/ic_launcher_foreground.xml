@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Easemic mark (easemic.com favicon path, 100-unit space) scaled 0.6 into the 66dp safe zone of a 108dp adaptive icon layer. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="21.66"
+        android:translateY="23.70"
+        android:scaleX="0.6"
+        android:scaleY="0.6">
+        <path
+            android:pathData="M22,55 L76,55 C84.5,55 88.5,45.5 83,39 C80,33.5 73,31 66.5,33 C63,24 54,18.5 44.5,20.5 C31.5,23.5 22,35 22,50.5 C22,68.5 34,81 51.5,81 C62,81 70.5,76 76,69"
+            android:strokeColor="#F3EFE6"
+            android:strokeWidth="10.5"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>
