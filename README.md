@@ -39,6 +39,7 @@ A native Android comic and manga reader that collects galleries and serialized s
 Download the latest signed Android APK (Android 10 / API 29+):
 
 - **Direct APK:** [`https://easemic.com/api/app/download`](https://easemic.com/api/app/download)
+- **GitHub Releases:** [github.com/dirtyfancy/easemic/releases](https://github.com/dirtyfancy/easemic/releases)
 
 Easemic checks `easemic.com` once a day for newer releases and updates in place inside the app.
 
@@ -57,6 +58,11 @@ are being rewritten with synthetic data first.
 
 - **No accounts, no tracking, no ads.** Easemic has no user accounts, no analytics SDKs, and no middleman servers. Your credentials and comics travel strictly between your device and the storage you configure.
 - **Clean-room implementation.** Built from scratch in Kotlin and Jetpack Compose. Not affiliated with any upstream catalog or storage provider.
+
+## Community
+
+Easemic is shared with and recognizes the [LINUX DO](https://linux.do) community.
+本项目认可并感谢 [LINUX DO 社区](https://linux.do)。
 
 ## License
 
