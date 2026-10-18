@@ -100,8 +100,8 @@ fun chapterCellPresentation(row: ChapterRowPresentation): ChapterCellPresentatio
             if (online) add(ChapterCellAction.READ_ONLINE)
         },
         explanation = explanation,
-        menuHeader = "${explanation ?: AppStrings.chapterStateText(state)} · ${row.label}",
-        description = "${row.label}, ${AppStrings.chapterStateText(state)}",
+        menuHeader = "${explanation ?: localizedChapterState(state)} · ${row.label}",
+        description = "${row.label}, ${localizedChapterState(state)}",
         tap = when {
             saved -> ChapterCellTap.READ
             glyph == ChapterCellGlyph.LOCK -> ChapterCellTap.MENU
@@ -114,6 +114,13 @@ fun chapterCellPresentation(row: ChapterRowPresentation): ChapterCellPresentatio
         // to "Removed a…". The short form fits, the full story stays in the menu.
         removedLine = if (row.removedAtSource) tr("Removed", "已移除", "已移除", "削除済み") else null,
     )
+}
+
+private fun localizedChapterState(raw: String): String = when (raw) {
+    "Removed at source, saved copy kept" -> tr(raw, "图源已下架，已保留保存副本", "圖源已下架，已保留儲存副本", "ソースで削除、保存済みコピーあり")
+    "Removed at source" -> AppStrings.chapterStateText(raw)
+    "Cloud copy failed" -> tr(raw, "云端副本失败", "雲端副本失敗", "クラウドのコピーに失敗")
+    else -> AppStrings.chapterStateText(raw)
 }
 
 internal fun chapterCellTintAxis(glyph: ChapterCellGlyph): ShelfBadgeTintAxis? = when (glyph) {

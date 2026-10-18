@@ -22,6 +22,7 @@ import com.easemic.app.model.GrantKind
 import com.easemic.app.ui.components.PclOutlinedButton
 import com.easemic.app.ui.components.PclTextButton
 import com.easemic.app.ui.theme.PclSpacing
+import com.easemic.app.i18n.AppStrings
 
 /**
  * A32 §5: the honest status surfaces the retired local skin owned. These are
@@ -52,11 +53,11 @@ fun DetailItemGoneScreen(onBack: () -> Unit) {
     ) {
         PclOutlinedButton(
             onClick = onBack,
-            modifier = Modifier.semantics { contentDescription = "Back" },
+            modifier = Modifier.semantics { contentDescription = AppStrings.back },
         ) {
-            Text("Back")
+            Text(AppStrings.back)
         }
-        Text(LocalDetailCopy.ITEM_GONE)
+        Text(LocalDetailCopy.display(LocalDetailCopy.ITEM_GONE))
     }
 }
 

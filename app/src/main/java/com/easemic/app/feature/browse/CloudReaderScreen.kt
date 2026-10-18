@@ -559,7 +559,7 @@ fun CloudReaderScreen(
                     if (session.transition != null && page == 0) {
                         VerticalStripChapterBanner(
                             text = session.transition.startText,
-                            actionLabel = if (session.transition.hasPrevious) "Load previous chapter" else null,
+                            actionLabel = if (session.transition.hasPrevious) AppStrings.loadPreviousChapter else null,
                             testTag = "cloud-reader-transition-start",
                             onActivate = {
                                 if (session.transition.hasPrevious) {
@@ -572,7 +572,7 @@ fun CloudReaderScreen(
                     if (session.transition != null && page == pageSlotCount - 1) {
                         VerticalStripChapterBanner(
                             text = session.transition.endText,
-                            actionLabel = if (session.transition.hasNext) "Continue to next chapter" else null,
+                            actionLabel = if (session.transition.hasNext) AppStrings.continueNextChapter else null,
                             testTag = "cloud-reader-transition-end",
                             onActivate = {
                                 if (session.transition.hasNext) {
@@ -669,7 +669,7 @@ fun CloudReaderScreen(
                                 )
                                 val refused = loadFailure.kind == RemotePageFailure.Kind.SIGN_IN_REJECTED
                                 Text(
-                                    if (refused) signInRejectedLine ?: "Couldn't load this page." else "Couldn't load this page.",
+                                    if (refused) signInRejectedLine ?: AppStrings.pageFailedTitle else AppStrings.pageFailedTitle,
                                     color = palette.muted,
                                     modifier = Modifier.testTag("cloud-reader-page-failure-text"),
                                 )
@@ -1026,7 +1026,7 @@ fun CloudReaderScreen(
                         Text(
                             // #D16: a refused sign-in says why (and offers no Retry — this
                             // reader still holds the old password, so it cannot work).
-                            if (refused) signInRejectedLine ?: "Couldn't load this page." else "Couldn't load this page.",
+                            if (refused) signInRejectedLine ?: AppStrings.pageFailedTitle else AppStrings.pageFailedTitle,
                             color = palette.muted,
                             modifier = Modifier.testTag("cloud-reader-page-failure-text"),
                         )

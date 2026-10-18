@@ -47,6 +47,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.easemic.app.i18n.tr
+import com.easemic.app.i18n.AppStrings
 import com.easemic.app.ui.components.PclOutlinedButton
 import com.easemic.app.ui.theme.QuietShelfPalette
 import com.easemic.app.ui.theme.quietShelfPalette
@@ -268,7 +269,7 @@ fun CloudStoragePickerScreen(
                 .padding(start = 20.dp, end = 20.dp, top = 24.dp)
                 .heightIn(min = 48.dp),
         ) {
-            Text("Back")
+            Text(AppStrings.back)
         }
     }
 
@@ -521,7 +522,7 @@ private fun StorageAdviceFaqDialog(
                 onClick = onDismiss,
                 modifier = Modifier.testTag("cloud-storage-faq-close"),
             ) {
-                Text("Got it", color = palette.statusOk, fontWeight = FontWeight.SemiBold)
+                Text(AppStrings.gotIt, color = palette.statusOk, fontWeight = FontWeight.SemiBold)
             }
         },
     )
@@ -632,7 +633,12 @@ internal fun S3ApiKeyQuickSetupDialog(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
                         Text(
-                            "✓ Detected: ${detectedProvider.hintTitle}",
+                            tr(
+                                "✓ Detected: ${detectedProvider.hintTitle}",
+                                "✓ 已识别：${detectedProvider.hintTitle}",
+                                "✓ 已識別：${detectedProvider.hintTitle}",
+                                "✓ 検出済み：${detectedProvider.hintTitle}",
+                            ),
                             style = MaterialTheme.typography.labelMedium,
                             color = palette.statusOk,
                             fontWeight = FontWeight.SemiBold,
@@ -675,7 +681,7 @@ internal fun S3ApiKeyQuickSetupDialog(
                 enabled = !busy,
                 modifier = Modifier.testTag("s3-apikey-cancel"),
             ) {
-                Text("Cancel", color = palette.muted)
+                Text(AppStrings.cancel, color = palette.muted)
             }
         },
         confirmButton = {

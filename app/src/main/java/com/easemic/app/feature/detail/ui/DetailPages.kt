@@ -47,6 +47,7 @@ import com.easemic.app.feature.browse.PreviewPrefetchWindow
 import com.easemic.app.feature.browse.DetailAsyncImage
 import com.easemic.app.feature.detail.DetailImage
 import com.easemic.app.i18n.AppStrings
+import com.easemic.app.i18n.tr
 import com.easemic.app.ui.theme.QuietShelfShimmer
 import com.easemic.app.ui.theme.quietShelfPalette
 import kotlin.math.roundToInt
@@ -158,10 +159,10 @@ internal fun DetailPreviewGrid(
         modifier = Modifier
             .fillMaxWidth()
             .testTag("remote-detail-preview-grid")
-            .semantics { contentDescription = "Preview thumbnails" },
+            .semantics { contentDescription = tr("Preview thumbnails", "预览缩略图", "預覽縮圖", "プレビューのサムネイル") },
     ) {
         Text(
-            "PAGES · PREVIEW",
+            AppStrings.previewHeading,
             style = MaterialTheme.typography.labelSmall,
             color = quietShelfPalette().muted,
         )
@@ -221,9 +222,9 @@ internal fun DetailPreviewGrid(
                 items(slotCount, key = { it }) { index ->
                     val image = previewImages.getOrNull(index)
                     val cellDescription = if (image is DetailImage.Missing) {
-                        "Preview ${index + 1} unavailable"
+                        tr("Preview ${index + 1} unavailable", "预览 ${index + 1} 不可用", "預覽 ${index + 1} 無法使用", "プレビュー ${index + 1} は利用できません")
                     } else {
-                        "Preview ${index + 1}"
+                        tr("Preview ${index + 1}", "预览 ${index + 1}", "預覽 ${index + 1}", "プレビュー ${index + 1}")
                     }
                     Box(
                         modifier = Modifier

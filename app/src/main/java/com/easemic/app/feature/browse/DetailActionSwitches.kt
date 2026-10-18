@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.easemic.app.feature.download.SourceDelistedCopy
+import com.easemic.app.i18n.tr
 import com.easemic.app.ui.library.lucideArrowBigDown
 import com.easemic.app.ui.theme.quietShelfPalette
 
@@ -89,9 +90,9 @@ fun CollectSwitch(icon: CollectIcon, onClick: () -> Unit, modifier: Modifier = M
     // "Collected · syncing to cloud" subtitle narrated a success that has
     // not happened yet.
     val description = when (icon) {
-        CollectIcon.HEART_HOLLOW, CollectIcon.CLOUD_HOLLOW -> "Not collected"
-        CollectIcon.HEART_SOLID, CollectIcon.CLOUD_SOLID, CollectIcon.CLOUD_PENDING -> "Collected"
-        CollectIcon.CLOUD_BLOCKED -> SourceDelistedCopy.COLLECTED_LABEL
+        CollectIcon.HEART_HOLLOW, CollectIcon.CLOUD_HOLLOW -> tr("Not collected", "未收藏", "未收藏", "未コレクション")
+        CollectIcon.HEART_SOLID, CollectIcon.CLOUD_SOLID, CollectIcon.CLOUD_PENDING -> tr("Collected", "已收藏", "已收藏", "コレクション済み")
+        CollectIcon.CLOUD_BLOCKED -> tr(SourceDelistedCopy.COLLECTED_LABEL, "已收藏 · 图源不再提供此漫画", "已收藏 · 圖源不再提供此漫畫", "コレクション済み · ソースではこのマンガを提供していません")
     }
     val isHeart = icon == CollectIcon.HEART_HOLLOW || icon == CollectIcon.HEART_SOLID
     // Pending (collected, upload not yet done) and uploaded both render FILLED.
@@ -159,11 +160,12 @@ fun DownloadSwitch(
     tag: String = "detail-download",
 ) {
     val description = when {
-        locked -> DETAIL_DOWNLOAD_UPLOADING_LABEL
+        locked -> tr(DETAIL_DOWNLOAD_UPLOADING_LABEL, "正在上传到云端", "正在上傳至雲端", "クラウドにアップロード中")
         icon == DownloadIcon.HOLLOW ->
-            if (delisted) SourceDelistedCopy.NOT_DOWNLOADED_LABEL else "Not downloaded"
-        icon == DownloadIcon.IN_FLIGHT -> "Downloading"
-        else -> "Downloaded"
+            if (delisted) tr(SourceDelistedCopy.NOT_DOWNLOADED_LABEL, "未下载 · 图源不再提供此漫画", "未下載 · 圖源不再提供此漫畫", "未ダウンロード · ソースではこのマンガを提供していません")
+            else tr("Not downloaded", "未下载", "未下載", "未ダウンロード")
+        icon == DownloadIcon.IN_FLIGHT -> tr("Downloading", "正在下载", "正在下載", "ダウンロード中")
+        else -> tr("Downloaded", "已下载", "已下載", "ダウンロード済み")
     }
     SwitchBox(
         tag = tag,

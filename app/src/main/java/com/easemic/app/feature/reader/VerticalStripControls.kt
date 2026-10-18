@@ -38,11 +38,7 @@ fun VerticalStripAutoScrollFloatingPill(
     modifier: Modifier = Modifier,
 ) {
     if (speed == AutoScrollSpeed.OFF) return
-    val statusText = if (touchPaused) {
-        "Auto ${speed.label} · Hold"
-    } else {
-        "Auto ${speed.label}"
-    }
+    val statusText = AppStrings.autoScrollSpeed(speed.label, touchPaused)
     Surface(
         shape = RoundedCornerShape(999.dp),
         color = Color(0xFF1A1918).copy(alpha = 0.86f),

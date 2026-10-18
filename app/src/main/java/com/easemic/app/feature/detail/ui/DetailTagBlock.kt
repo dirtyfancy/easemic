@@ -87,7 +87,7 @@ internal fun DetailTagBlock(
     val onLongClick: (DetailTag) -> Unit = { tag ->
         clipboard.setText(AnnotatedString(tag.label))
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            android.widget.Toast.makeText(context, "Copied", android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(context, AppStrings.copied, android.widget.Toast.LENGTH_SHORT).show()
         }
     }
     when (tags) {
@@ -153,7 +153,7 @@ private fun NamespacedTagRow(
         verticalAlignment = Alignment.Top,
     ) {
         Text(
-            text = row.label.replaceFirstChar { it.titlecase(Locale.ENGLISH) },
+            text = tagRowLabel(row.namespace, row.label.replaceFirstChar { it.titlecase(Locale.ENGLISH) }),
             color = palette.ink.copy(alpha = .68f),
             fontSize = 12.sp,
             maxLines = 1,
@@ -440,4 +440,21 @@ private fun DetailTagsLoading() {
             }
         }
     }
+}
+
+/** Tag group headings are app wording, translated by namespace; an unknown namespace keeps the source's own word. */
+internal fun tagRowLabel(namespace: String, english: String): String = when (namespace) {
+    "tag" -> tr(english, "标签", "標籤", "タグ")
+    "language" -> tr(english, "语言", "語言", "言語")
+    "parody" -> tr(english, "原作", "原作", "原作")
+    "character" -> tr(english, "角色", "角色", "キャラクター")
+    "artist" -> tr(english, "作者", "作者", "作者")
+    "group" -> tr(english, "社团", "社團", "サークル")
+    "cosplayer" -> tr(english, "Coser", "Coser", "コスプレイヤー")
+    "female" -> tr(english, "女性", "女性", "女性")
+    "male" -> tr(english, "男性", "男性", "男性")
+    "mixed" -> tr(english, "混合", "混合", "混合")
+    "other" -> tr(english, "其他", "其他", "その他")
+    "location" -> tr(english, "地点", "地點", "場所")
+    else -> english
 }

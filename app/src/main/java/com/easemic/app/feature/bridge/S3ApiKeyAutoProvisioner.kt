@@ -4,6 +4,7 @@ import com.easemic.app.sync.R2RestBody
 import com.easemic.app.sync.R2RestHttp
 import com.easemic.app.sync.R2RestHttpResponse
 import com.easemic.app.sync.R2RestObjectStore
+import com.easemic.app.i18n.tr
 import org.json.JSONArray
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
@@ -18,27 +19,56 @@ import java.util.Locale
 enum class S3ApiKeyProvider(
     val displayName: String,
     val shortBadge: String,
-    val hintTitle: String,
-    val hintSteps: String,
+    private val hintTitleEn: String,
+    private val hintStepsEn: String,
 ) {
     BUNNY(
         displayName = "Bunny.net",
         shortBadge = "Bunny.net",
-        hintTitle = "Bunny.net Account API Key",
-        hintSteps = "Account menu → API key → copy your account API key. Easemic finds or creates the easemic-comics storage zone and connects via Bunny's S3 gateway.",
+        hintTitleEn = "Bunny.net Account API Key",
+        hintStepsEn = "Account menu → API key → copy your account API key. Easemic finds or creates the easemic-comics storage zone and connects via Bunny's S3 gateway.",
     ),
     BACKBLAZE_B2(
         displayName = "Backblaze B2",
         shortBadge = "Backblaze B2",
-        hintTitle = "Backblaze B2 Application Key",
-        hintSteps = "Dashboard → Application Keys → create an Application Key (or Master Key) and paste keyID:applicationKey (with a colon or on two lines). Easemic finds or creates an easemic-comics bucket.",
+        hintTitleEn = "Backblaze B2 Application Key",
+        hintStepsEn = "Dashboard → Application Keys → create an Application Key (or Master Key) and paste keyID:applicationKey (with a colon or on two lines). Easemic finds or creates an easemic-comics bucket.",
     ),
     CLOUDFLARE_R2(
         displayName = "Cloudflare R2",
         shortBadge = "Cloudflare R2",
-        hintTitle = "Cloudflare R2 API Token",
-        hintSteps = "Profile → API Tokens → Create Token → Custom token: set Account · Workers R2 Storage · Edit, create it and paste the token.",
-    ),
+        hintTitleEn = "Cloudflare R2 API Token",
+        hintStepsEn = "Profile → API Tokens → Create Token → Custom token: set Account · Workers R2 Storage · Edit, create it and paste the token.",
+    );
+
+    val hintTitle: String
+        get() = when (this) {
+            BUNNY -> tr(hintTitleEn, "Bunny.net 账户 API Key", "Bunny.net 帳戶 API Key", "Bunny.net アカウント API キー")
+            BACKBLAZE_B2 -> tr(hintTitleEn, "Backblaze B2 应用密钥", "Backblaze B2 應用程式金鑰", "Backblaze B2 アプリケーションキー")
+            CLOUDFLARE_R2 -> tr(hintTitleEn, "Cloudflare R2 API Token", "Cloudflare R2 API Token", "Cloudflare R2 API トークン")
+        }
+
+    val hintSteps: String
+        get() = when (this) {
+            BUNNY -> tr(
+                hintStepsEn,
+                "账户菜单 → API key → 复制账户 API key。Easemic 会查找或创建 easemic-comics 存储区域，并通过 Bunny 的 S3 网关连接。",
+                "帳戶選單 → API key → 複製帳戶 API key。Easemic 會尋找或建立 easemic-comics 儲存區，並透過 Bunny 的 S3 閘道連線。",
+                "アカウントメニュー → API key → アカウント API キーをコピーします。Easemic が easemic-comics ストレージゾーンを検索・作成し、Bunny の S3 ゲートウェイで接続します。",
+            )
+            BACKBLAZE_B2 -> tr(
+                hintStepsEn,
+                "控制台 → Application Keys → 创建 Application Key（或 Master Key），然后粘贴 keyID:applicationKey（用冒号分隔或分两行）。Easemic 会查找或创建 easemic-comics 存储桶。",
+                "控制台 → Application Keys → 建立 Application Key（或 Master Key），然後貼上 keyID:applicationKey（以冒號分隔或分成兩行）。Easemic 會尋找或建立 easemic-comics 儲存桶。",
+                "ダッシュボード → Application Keys → Application Key（または Master Key）を作成し、keyID:applicationKey を貼り付けます（コロン区切りまたは2行）。Easemic が easemic-comics バケットを検索・作成します。",
+            )
+            CLOUDFLARE_R2 -> tr(
+                hintStepsEn,
+                "个人资料 → API Tokens → Create Token → Custom token：勾选 Account · Workers R2 Storage · Edit，创建后粘贴 Token。",
+                "個人檔案 → API Tokens → Create Token → Custom token：勾選 Account · Workers R2 Storage · Edit，建立後貼上 Token。",
+                "プロフィール → API Tokens → Create Token → Custom token：Account · Workers R2 Storage · Edit を設定して作成し、トークンを貼り付けます。",
+            )
+        }
 }
 
 sealed interface S3ApiKeyProvisionResult {
@@ -494,29 +524,65 @@ class S3ApiKeyAutoProvisioner(
 }
 
 object S3ApiKeyCopy {
-    const val DIALOG_TITLE: String = "Connect with API key"
-    const val DIALOG_SUBTITLE: String =
-        "Paste an API key below. Easemic detects the provider, looks for easemic-comics, and creates it if needed."
-    const val INPUT_LABEL: String = "API key or token"
-    const val INPUT_PLACEHOLDER: String = "Bunny Account Key, B2 keyID:appKey, or R2 Token"
-    const val CONNECT_CTA: String = "Connect easemic-comics"
-    const val CONNECTING_CTA: String = "Connecting…"
+    val DIALOG_TITLE: String get() = tr("Connect with API key", "使用 API Key 连接", "使用 API Key 連線", "API キーで接続")
+    val DIALOG_SUBTITLE: String get() = tr(
+        "Paste an API key below. Easemic detects the provider, looks for easemic-comics, and creates it if needed.",
+        "在下方粘贴 API Key。Easemic 会识别服务商，查找 easemic-comics，并在需要时创建它。",
+        "在下方貼上 API Key。Easemic 會識別服務商，尋找 easemic-comics，並在需要時建立它。",
+        "下に API キーを貼り付けます。Easemic がプロバイダーを判別し、easemic-comics を検索・必要なら作成します。",
+    )
+    val INPUT_LABEL: String get() = tr("API key or token", "API Key 或 Token", "API Key 或 Token", "API キーまたはトークン")
+    val INPUT_PLACEHOLDER: String get() = tr("Bunny Account Key, B2 keyID:appKey, or R2 Token", "Bunny Account Key、B2 keyID:appKey 或 R2 Token", "Bunny Account Key、B2 keyID:appKey 或 R2 Token", "Bunny Account Key、B2 keyID:appKey、または R2 Token")
+    val CONNECT_CTA: String get() = tr("Connect easemic-comics", "连接 easemic-comics", "連線 easemic-comics", "easemic-comics に接続")
+    val CONNECTING_CTA: String get() = tr("Connecting…", "连接中…", "連線中…", "接続中…")
 
-    const val KEY_REQUIRED: String = "Paste an API key first."
-    const val UNRECOGNIZED_KEY: String =
-        "Could not recognize this key format. Select Bunny.net, Backblaze B2, or Cloudflare R2 above."
-    const val INVALID_BUNNY_KEY: String =
-        "Bunny.net rejected this Account API Key. Copy it from the account menu → API key."
-    const val INVALID_B2_KEY: String =
-        "Backblaze B2 rejected this key. Paste keyID:applicationKey from Application Keys."
-    const val INVALID_CF_TOKEN: String =
-        "Cloudflare rejected this R2 API Token. Check that it has the Account · Workers R2 Storage · Edit permission."
-    const val B2_KEY_MINT_FAILED: String =
-        "Could not create an S3-compatible key on Backblaze B2. Create an Application Key directly in Backblaze."
-    const val CREATE_BUCKET_FAILED: String =
-        "Connected to your account, but could not create the easemic-comics bucket."
-    const val NETWORK_ERROR: String =
-        "Could not reach the storage provider. Check your network and try again."
-    const val PROVIDER_ERROR: String =
-        "The storage provider returned an unexpected error. Try again."
+    val KEY_REQUIRED: String get() = tr("Paste an API key first.", "请先粘贴 API Key。", "請先貼上 API Key。", "先に API キーを貼り付けてください。")
+    val UNRECOGNIZED_KEY: String get() = tr(
+        "Could not recognize this key format. Select Bunny.net, Backblaze B2, or Cloudflare R2 above.",
+        "无法识别此密钥格式。请在上方选择 Bunny.net、Backblaze B2 或 Cloudflare R2。",
+        "無法識別此金鑰格式。請在上方選擇 Bunny.net、Backblaze B2 或 Cloudflare R2。",
+        "このキー形式を認識できません。上で Bunny.net、Backblaze B2、または Cloudflare R2 を選択してください。",
+    )
+    val INVALID_BUNNY_KEY: String get() = tr(
+        "Bunny.net rejected this Account API Key. Copy it from the account menu → API key.",
+        "Bunny.net 拒绝了此 Account API Key。请从账户菜单 → API key 复制。",
+        "Bunny.net 拒絕了此 Account API Key。請從帳戶選單 → API key 複製。",
+        "Bunny.net がこの Account API キーを拒否しました。アカウントメニュー → API key からコピーしてください。",
+    )
+    val INVALID_B2_KEY: String get() = tr(
+        "Backblaze B2 rejected this key. Paste keyID:applicationKey from Application Keys.",
+        "Backblaze B2 拒绝了此密钥。请从 Application Keys 粘贴 keyID:applicationKey。",
+        "Backblaze B2 拒絕了此金鑰。請從 Application Keys 貼上 keyID:applicationKey。",
+        "Backblaze B2 がこのキーを拒否しました。Application Keys の keyID:applicationKey を貼り付けてください。",
+    )
+    val INVALID_CF_TOKEN: String get() = tr(
+        "Cloudflare rejected this R2 API Token. Check that it has the Account · Workers R2 Storage · Edit permission.",
+        "Cloudflare 拒绝了此 R2 API Token。请确认它拥有 Account · Workers R2 Storage · Edit 权限。",
+        "Cloudflare 拒絕了此 R2 API Token。請確認它擁有 Account · Workers R2 Storage · Edit 權限。",
+        "Cloudflare がこの R2 API トークンを拒否しました。Account · Workers R2 Storage · Edit 権限を確認してください。",
+    )
+    val B2_KEY_MINT_FAILED: String get() = tr(
+        "Could not create an S3-compatible key on Backblaze B2. Create an Application Key directly in Backblaze.",
+        "无法在 Backblaze B2 创建 S3 兼容密钥。请直接在 Backblaze 创建 Application Key。",
+        "無法在 Backblaze B2 建立 S3 相容金鑰。請直接在 Backblaze 建立 Application Key。",
+        "Backblaze B2 に S3 互換キーを作成できませんでした。Backblaze で Application Key を直接作成してください。",
+    )
+    val CREATE_BUCKET_FAILED: String get() = tr(
+        "Connected to your account, but could not create the easemic-comics bucket.",
+        "已连接到账户，但无法创建 easemic-comics 存储桶。",
+        "已連線至帳戶，但無法建立 easemic-comics 儲存桶。",
+        "アカウントには接続しましたが、easemic-comics バケットを作成できませんでした。",
+    )
+    val NETWORK_ERROR: String get() = tr(
+        "Could not reach the storage provider. Check your network and try again.",
+        "无法连接存储服务商。请检查网络后重试。",
+        "無法連線儲存服務商。請檢查網路後重試。",
+        "ストレージプロバイダーに接続できません。ネットワークを確認して再試行してください。",
+    )
+    val PROVIDER_ERROR: String get() = tr(
+        "The storage provider returned an unexpected error. Try again.",
+        "存储服务商返回了意外错误。请重试。",
+        "儲存服務商返回了意外錯誤。請重試。",
+        "ストレージプロバイダーで予期しないエラーが発生しました。再試行してください。",
+    )
 }

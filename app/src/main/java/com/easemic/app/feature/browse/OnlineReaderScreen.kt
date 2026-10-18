@@ -1,6 +1,7 @@
 package com.easemic.app.feature.browse
 
 import com.easemic.app.i18n.AppStrings
+import com.easemic.app.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -511,7 +512,7 @@ fun OnlineReaderScreen(
                     if (transition != null && pageIndex == 0) {
                         VerticalStripChapterBanner(
                             text = transition.startText,
-                            actionLabel = if (transition.hasPrevious) "Load previous chapter" else null,
+                            actionLabel = if (transition.hasPrevious) AppStrings.loadPreviousChapter else null,
                             testTag = "online-reader-transition-start",
                             onActivate = {
                                 if (transition.hasPrevious) {
@@ -524,7 +525,7 @@ fun OnlineReaderScreen(
                     if (transition != null && pageIndex == pageSlotCount - 1) {
                         VerticalStripChapterBanner(
                             text = transition.endText,
-                            actionLabel = if (transition.hasNext) "Continue to next chapter" else null,
+                            actionLabel = if (transition.hasNext) AppStrings.continueNextChapter else null,
                             testTag = "online-reader-transition-end",
                             onActivate = {
                                 if (transition.hasNext) {
@@ -698,7 +699,7 @@ fun OnlineReaderScreen(
                                 )
                             } else {
                                 Text(
-                                    "Page unavailable",
+                                    tr("Page unavailable", "页面不可用", "頁面無法使用", "ページを利用できません"),
                                     color = palette.muted,
                                     modifier = Modifier.testTag("online-reader-page-unavailable"),
                                 )
@@ -1143,7 +1144,7 @@ fun OnlineReaderScreen(
                         )
                     } else {
                         Text(
-                            "Page unavailable",
+                            tr("Page unavailable", "页面不可用", "頁面無法使用", "ページを利用できません"),
                             color = palette.muted,
                             modifier = Modifier.testTag("online-reader-page-unavailable"),
                         )

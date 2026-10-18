@@ -80,7 +80,7 @@ data class DetailControls(
                     downloadIcon = null,
                     downloadInteractive = false,
                     deleteDownloadVisible = false,
-                    helper = LocalDetailCopy.IMPORT_HELPER.takeUnless { filesGone },
+                    helper = LocalDetailCopy.display(LocalDetailCopy.IMPORT_HELPER).takeUnless { filesGone },
                 )
             }
             val switchState = DetailSwitchState.from(
@@ -109,7 +109,7 @@ data class DetailControls(
                 downloadInteractive = !switchState.downloadLocked,
                 downloadLocked = switchState.downloadLocked,
                 deleteDownloadVisible = true,
-                helper = LocalDetailCopy.DOWNLOAD_HELPER.takeUnless { filesGone },
+                helper = LocalDetailCopy.display(LocalDetailCopy.DOWNLOAD_HELPER).takeUnless { filesGone },
                 // J7: `fetched` is the row's REAL page count, never the job's
                 // recorded truncation point -- if the two ever disagree, the
                 // pages on disk are the fact and the job record is a memory.

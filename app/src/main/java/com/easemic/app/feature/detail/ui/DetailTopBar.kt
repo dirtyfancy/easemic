@@ -61,7 +61,7 @@ internal fun DetailTopBar(
             shape = RoundedCornerShape(999.dp),
             color = palette.card,
             border = BorderStroke(1.dp, palette.line),
-            modifier = Modifier.semantics { contentDescription = "Back" },
+            modifier = Modifier.semantics { contentDescription = AppStrings.back },
         ) {
             Text(
                 AppStrings.back,
@@ -78,7 +78,7 @@ internal fun DetailTopBar(
                     border = BorderStroke(1.dp, palette.line),
                     modifier = Modifier
                         .testTag("detail-more")
-                        .semantics { contentDescription = "More options" },
+                        .semantics { contentDescription = com.easemic.app.i18n.tr("More options", "更多选项", "更多選項", "その他のオプション") },
                 ) {
                     Box(Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
                         MoreGlyph(palette = palette)

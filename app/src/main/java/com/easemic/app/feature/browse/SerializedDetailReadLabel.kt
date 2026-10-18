@@ -1,5 +1,7 @@
 package com.easemic.app.feature.browse
 
+import com.easemic.app.i18n.tr
+
 import com.easemic.app.feature.download.SeriesIdentityV2
 import com.easemic.app.feature.library.ChapterShelfRow
 import com.easemic.app.feature.reader.ReaderOpenTarget
@@ -27,13 +29,17 @@ fun serializedContinueText(
     val targetRow = target?.let { rows.firstOrNull { row -> row.chapterId == it.chapterId } }
     val signInChapterId = targetRow?.takeIf { it.needsSignIn }?.chapterId
     val verb = serializedDetailReadLabel(series, target, shelfRows, remoteProgress)
-    if (verb == "Read" || target == null) return SerializedContinueText("Read", null, null, signInChapterId)
+    val read = tr("Read", "阅读", "閱讀", "読む")
+    val continueVerb = tr("Continue", "继续", "繼續", "続き")
+    if (verb == "Read" || target == null) return SerializedContinueText(read, null, null, signInChapterId)
     val label = targetRow?.label?.takeIf(String::isNotBlank)
-        ?: return SerializedContinueText("Continue", null, null, signInChapterId)
+        ?: return SerializedContinueText(continueVerb, null, null, signInChapterId)
     return SerializedContinueText(
-        verb = "Continue",
+        verb = continueVerb,
         chapter = label,
-        pageSuffix = (target.initialOrdinal + 1).takeIf { it > 1 }?.let { " · page $it" },
+        pageSuffix = (target.initialOrdinal + 1).takeIf { it > 1 }?.let {
+            tr(" · page $it", " · 第 $it 页", " · 第 $it 頁", " · $it ページ")
+        },
         signInChapterId = signInChapterId,
     )
 }

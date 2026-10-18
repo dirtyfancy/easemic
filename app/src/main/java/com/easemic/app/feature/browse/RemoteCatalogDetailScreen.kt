@@ -50,6 +50,9 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.easemic.app.feature.download.DetailDownloadControl
 import com.easemic.app.i18n.AppStrings
+import com.easemic.app.i18n.AppI18n
+import com.easemic.app.i18n.AppLanguage
+import com.easemic.app.i18n.tr
 import com.easemic.app.feature.download.SeriesIdentityV2
 import com.easemic.app.feature.download.SerializedDownloadChapterRequest
 import com.easemic.app.feature.download.DetailDownloadPrimaryAction
@@ -105,11 +108,11 @@ fun SerializedCollectConfirmationDialog(
 ) {
     AlertDialog(
         onDismissRequest = onCancel,
-        title = { Text("Collect $chapterCount chapters?") },
+        title = { Text(tr("Collect $chapterCount chapters?", "收藏 $chapterCount 个章节？", "收藏 $chapterCount 個章節？", "$chapterCount チャプターをコレクションしますか？")) },
         text = {
             Column {
-                Text("All $chapterCount readable chapters will be saved to this phone.")
-                estimatedBytes?.let { Text("About ${formatSerializedBytes(it)}") }
+                Text(tr("All $chapterCount readable chapters will be saved to this phone.", "所有 $chapterCount 个可阅读章节都会保存到本机。", "所有 $chapterCount 個可閱讀章節都會儲存到本機。", "読める $chapterCount チャプターをすべて端末に保存します。"))
+                estimatedBytes?.let { Text(tr("About ${formatSerializedBytes(it)}", "约 ${formatSerializedBytes(it)}", "約 ${formatSerializedBytes(it)}", "約 ${formatSerializedBytes(it)}")) }
             }
         },
         confirmButton = {
@@ -117,7 +120,7 @@ fun SerializedCollectConfirmationDialog(
                 onClick = onConfirm,
                 modifier = Modifier.testTag("serialized-collect-confirm"),
             ) {
-                Text("Collect all")
+                Text(tr("Collect all", "全部收藏", "全部收藏", "すべてコレクション"))
             }
         },
         dismissButton = {
@@ -125,7 +128,7 @@ fun SerializedCollectConfirmationDialog(
                 onClick = onCancel,
                 modifier = Modifier.testTag("serialized-collect-cancel"),
             ) {
-                Text("Cancel")
+                Text(AppStrings.cancel)
             }
         },
     )
@@ -148,6 +151,31 @@ internal fun serializedDeleteSavedChaptersMessage(cloudCopyExists: Boolean): Str
         "The saved pages of every chapter in this series will be deleted from this phone. " +
             "You will keep following it; new chapters still download. To stop following, use Uncollect."
     }
+
+private fun localizedSerializedDeleteSavedChaptersMessage(cloudCopyExists: Boolean): String =
+    if (cloudCopyExists) {
+        tr(
+            serializedDeleteSavedChaptersMessage(true),
+            "会从本机删除页面；收藏标记和云端副本会保留。",
+            "會從本機刪除頁面；收藏標記和雲端副本會保留。",
+            "端末からページを削除します。ブックマークとクラウドのコピーは残ります。",
+        )
+    } else {
+        tr(
+            serializedDeleteSavedChaptersMessage(false),
+            "会删除这部作品每个章节在本机保存的页面。你仍会关注这部作品，新章节仍会下载。若要停止关注，请取消收藏。",
+            "會刪除這部作品每個章節在本機儲存的頁面。你仍會追蹤這部作品，新章節仍會下載。若要停止追蹤，請取消收藏。",
+            "このシリーズの各チャプターの保存ページを端末から削除します。フォローは続き、新しいチャプターはダウンロードされます。フォローをやめるにはコレクションを解除してください。",
+        )
+    }
+
+private fun localizedDetailStatus(raw: String): String = when (raw) {
+    SourceDelistedCopy.SENTENCE -> tr(raw, "图源不再提供此漫画。", "圖源不再提供此漫畫。", "ソースではこのマンガを提供していません。")
+    SourceDelistedCopy.CLAUSE -> tr(raw, "图源不再提供此漫画", "圖源不再提供此漫畫", "ソースではこのマンガを提供していません")
+    SourceDelistedCopy.COLLECTED_LABEL -> tr(raw, "已收藏 · 图源不再提供此漫画", "已收藏 · 圖源不再提供此漫畫", "コレクション済み · ソースではこのマンガを提供していません")
+    SourceDelistedCopy.NOT_DOWNLOADED_LABEL -> tr(raw, "未下载 · 图源不再提供此漫画", "未下載 · 圖源不再提供此漫畫", "未ダウンロード · ソースではこのマンガを提供していません")
+    else -> AppStrings.chapterStateText(raw)
+}
 
 /**
  * The Part 2 adapters live behind [SourceDetailRegistry], but this screen must
@@ -207,7 +235,7 @@ fun ComicDetailScreen(
     onLocalDownloadRetry: () -> Unit = {},
     onLocalDownloadDelete: () -> Unit = {},
     /** #C60: the Remote subject's Read label (`detailReadLabel`); "Read" when the caller has no progress. */
-    readLabel: String = "Read",
+    readLabel: String = AppStrings.readAction,
     /** Local only: open the reader at this 0-based page. */
     onReadFrom: (startOrdinal: Int) -> Unit = {},
     /**
@@ -398,7 +426,7 @@ fun RemoteCatalogDetailScreen(
     onLocalDownloadRetry: () -> Unit = {},
     onLocalDownloadDelete: () -> Unit = {},
     /** #C60: see [ComicDetailScreen]; the Read button's text. */
-    readLabel: String = "Read",
+    readLabel: String = AppStrings.readAction,
     /** Known before chapter metadata loads; serialized detail shows Continue + (#E73) Download + Collect. */
     serializedDetail: Boolean = false,
     /** Serialized sources pass their fetched chapter list; gallery detail leaves this null. */
@@ -456,10 +484,10 @@ fun RemoteCatalogDetailScreen(
     onZaimanhuaSignIn: () -> Unit = {},
 ) {
     val helper = if (serializedDetail) {
-        RemoteDetailHelperCopy.serialized(presence, cloudBound, keepOnlyCloud)
+        RemoteDetailHelperCopy.displaySerialized(presence, cloudBound, keepOnlyCloud)
     } else DetailActionMatrix.present(
         DetailActionFacts(presence = presence, sourceFamily = sourceFamily),
-    ).helper
+    ).helper.let(RemoteDetailHelperCopy::display)
     val switchState = DetailSwitchState.from(
         DetailSwitchFacts(
             cloudBound = cloudBound,
@@ -503,7 +531,12 @@ fun RemoteCatalogDetailScreen(
         savedIds = savedIds,
         removedIds = removedIds,
         zone = java.time.ZoneId.systemDefault(),
-        locale = java.util.Locale.ENGLISH,
+        locale = when (AppI18n.currentLanguage) {
+            AppLanguage.EN -> java.util.Locale.ENGLISH
+            AppLanguage.ZH_HANS -> java.util.Locale.SIMPLIFIED_CHINESE
+            AppLanguage.ZH_HANT -> java.util.Locale.TRADITIONAL_CHINESE
+            AppLanguage.JA -> java.util.Locale.JAPANESE
+        },
     ) else null
     val previewSlotCount = if (serializedDetail) 0 else maxOf(item.pageCount ?: 0, item.previewUrls.size)
     val downloadUi = DetailDownloadControl.present(
@@ -721,7 +754,7 @@ fun RemoteCatalogDetailScreen(
                                 onClick = { confirmDeleteSavedSerialized = true },
                                 modifier = Modifier.testTag("delete-saved-serialized-chapters"),
                             ) {
-                                Text("Delete saved chapters")
+                                Text(tr("Delete saved chapters", "删除已保存章节", "刪除已儲存章節", "保存済みチャプターを削除"))
                             }
                         }
                     } else {
@@ -742,8 +775,8 @@ fun RemoteCatalogDetailScreen(
             notices = {
                 DetailNotices(
                     palette = palette,
-                    delistedSentence = delistedHint,
-                    statusMessage = statusMessage,
+                    delistedSentence = delistedHint?.let(::localizedDetailStatus),
+                    statusMessage = statusMessage?.let(::localizedDetailStatus),
                     removedChaptersLine = serializedFacts?.removedLine,
                     helperLink = helperLink,
                     onHelperClick = { helperSheetOpen = true },
@@ -841,8 +874,8 @@ fun RemoteCatalogDetailScreen(
             } else {
                 kind.message
             },
-            confirmLabel = "Confirm",
-            dismissLabel = "Cancel",
+            confirmLabel = AppStrings.confirm,
+            dismissLabel = AppStrings.cancel,
             onConfirm = {
                 confirmKind = null
                 when (kind) {
@@ -856,10 +889,10 @@ fun RemoteCatalogDetailScreen(
     }
     if (confirmDeleteChapterId != null) {
         DetailActionConfirmDialog(
-            title = "Delete saved copy?",
-            message = "Removes this chapter's pages from this phone. Your cloud copy, bookmark and reading progress stay.",
-            confirmLabel = "Delete",
-            dismissLabel = "Cancel",
+            title = tr("Delete saved copy?", "删除已保存副本？", "刪除已儲存副本？", "保存済みコピーを削除しますか？"),
+            message = tr("Removes this chapter's pages from this phone. Your cloud copy, bookmark and reading progress stay.", "会从本机删除此章节的页面；云端副本、收藏和阅读进度会保留。", "會從本機刪除此章節的頁面；雲端副本、收藏和閱讀進度會保留。", "このチャプターのページを端末から削除します。クラウドのコピー、ブックマーク、読書の進捗は残ります。"),
+            confirmLabel = AppStrings.delete,
+            dismissLabel = AppStrings.cancel,
             onConfirm = {
                 val chapterId = confirmDeleteChapterId
                 confirmDeleteChapterId = null
@@ -870,10 +903,10 @@ fun RemoteCatalogDetailScreen(
     }
     if (confirmDeleteSavedSerialized && onDeleteSavedSerializedChapters != null) {
         DetailActionConfirmDialog(
-            title = "Delete saved chapters?",
-            message = serializedDeleteSavedChaptersMessage(serializedCloudChapterRows.isNotEmpty()),
-            confirmLabel = "Delete",
-            dismissLabel = "Cancel",
+            title = tr("Delete saved chapters?", "删除已保存章节？", "刪除已儲存章節？", "保存済みチャプターを削除しますか？"),
+            message = localizedSerializedDeleteSavedChaptersMessage(serializedCloudChapterRows.isNotEmpty()),
+            confirmLabel = AppStrings.delete,
+            dismissLabel = AppStrings.cancel,
             onConfirm = {
                 confirmDeleteSavedSerialized = false
                 onDeleteSavedSerializedChapters()
@@ -883,10 +916,10 @@ fun RemoteCatalogDetailScreen(
     }
     signInChapterId?.let {
         DetailActionConfirmDialog(
-            title = "Sign in to read this chapter",
-            message = "再漫画 only shows this chapter to signed-in readers.",
-            confirmLabel = "Sign in",
-            dismissLabel = "Not now",
+            title = tr("Sign in to read this chapter", "登录后阅读此章节", "登入後閱讀此章節", "サインインしてこのチャプターを読む"),
+            message = tr("再漫画 only shows this chapter to signed-in readers.", "再漫画只向已登录用户显示此章节。", "再漫畫只向已登入使用者顯示此章節。", "再漫画ではサインインした読者にのみこのチャプターを表示します。"),
+            confirmLabel = AppStrings.signIn,
+            dismissLabel = AppStrings.notNow,
             onConfirm = {
                 signInChapterId = null
                 onZaimanhuaSignIn()
@@ -1052,8 +1085,8 @@ private fun LocalDetailBody(
     val helperLink = when {
         controls.helper == null -> null
         controls.collectIcon == null && controls.downloadIcon == null -> null
-        controls.downloadIcon != null -> "What Collect and Download do ›"
-        else -> "What Collect does ›"
+        controls.downloadIcon != null -> AppStrings.whatCollectAndDownloadDo
+        else -> AppStrings.whatCollectDoes
     }
     val switches: (@Composable () -> Unit)? =
         if (controls.collectIcon == null && controls.downloadIcon == null) {
@@ -1143,7 +1176,7 @@ private fun LocalDetailBody(
                     )
                     DetailNotices(
                         palette = palette,
-                        statusMessage = statusMessage,
+                        statusMessage = statusMessage?.let(::localizedDetailStatus),
                         // #E105 (owner): the helper copy lives behind the link's
                         // sheet only — never a static line on the page. A30 §2.4
                         // still holds through the link: no helper → no link.

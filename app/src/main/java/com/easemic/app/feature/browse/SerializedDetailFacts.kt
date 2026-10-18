@@ -6,6 +6,7 @@ import com.easemic.app.feature.source.SeriesDate
 import com.easemic.app.feature.source.SeriesDetailSnapshot
 import com.easemic.app.feature.source.SeriesPublicationStatus
 import com.easemic.app.feature.source.valueOrNull
+import com.easemic.app.i18n.tr
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -33,13 +34,13 @@ fun serializedDetailFacts(
     val count = if (sourceKnown || partial) sourceIds.size else savedIds.size
     val noun = if (count == 1) "chapter" else "chapters"
     val countText = when {
-        sourceKnown -> "$count $noun"
-        partial -> "$count $noun loaded"
-        else -> "$count saved $noun"
+        sourceKnown -> tr("$count $noun", "$count 章", "$count 章", "$count チャプター")
+        partial -> tr("$count $noun loaded", "已加载 $count 章", "已載入 $count 章", "$count チャプターを読み込み済み")
+        else -> tr("$count saved $noun", "已保存 $count 章", "已儲存 $count 章", "保存済み $count チャプター")
     }
     val status = when (snapshot?.status) {
-        SeriesPublicationStatus.ONGOING -> "Ongoing"
-        SeriesPublicationStatus.COMPLETED -> "Completed"
+        SeriesPublicationStatus.ONGOING -> tr("Ongoing", "连载中", "連載中", "連載中")
+        SeriesPublicationStatus.COMPLETED -> tr("Completed", "已完结", "已完結", "完結")
         else -> null
     }
     val pages = snapshot?.metadata?.totalPages?.valueOrNull()?.takeIf { it > 0 }
@@ -48,7 +49,9 @@ fun serializedDetailFacts(
         sourceName,
         status,
         countText,
-        pages?.takeIf { singleJm }?.let { "$it ${if (it == 1) "page" else "pages"}" },
+        pages?.takeIf { singleJm }?.let {
+            tr("$it ${if (it == 1) "page" else "pages"}", "$it 页", "$it 頁", "$it ページ")
+        },
     ).joinToString(" · ")
     val updated = snapshot?.metadata?.updated?.valueOrNull()
     val published = snapshot?.metadata?.published?.valueOrNull()
@@ -59,7 +62,7 @@ fun serializedDetailFacts(
         null -> null
     }
     val dateLine = dateValue?.let {
-        "${if (updated != null) "Updated" else "Published"} · " +
+        "${if (updated != null) tr("Updated", "更新于", "更新於", "更新") else tr("Published", "发布于", "發佈於", "公開")} · " +
             DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale).format(it)
     }
     val removed = removedIds.intersect(savedIds).size
@@ -67,7 +70,12 @@ fun serializedDetailFacts(
         line = line,
         dateLine = dateLine,
         removedLine = removed.takeIf { it > 0 }?.let {
-            "$it removed ${if (it == 1) "chapter" else "chapters"} kept"
+            tr(
+                "$it removed ${if (it == 1) "chapter" else "chapters"} kept",
+                "已保留 $it 个已移除章节",
+                "已保留 $it 個已移除章節",
+                "削除済みチャプター $it 件を保存中",
+            )
         },
     )
 }

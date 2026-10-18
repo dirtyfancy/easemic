@@ -33,6 +33,7 @@ import com.easemic.app.feature.detail.model.DetailPerson
 import com.easemic.app.feature.detail.model.SourceDetailProfile
 import com.easemic.app.feature.source.valueOrNull
 import com.easemic.app.i18n.AppStrings
+import com.easemic.app.i18n.tr
 import com.easemic.app.ui.theme.QuietShelfPalette
 
 /**
@@ -122,7 +123,7 @@ private fun HeaderByline(
     var peopleExpanded by rememberSaveable(memoryKey, "authors") { mutableStateOf(false) }
     var peopleOverflow by rememberSaveable(memoryKey, "authors-overflow") { mutableStateOf(false) }
     val byline = buildAnnotatedString {
-        append("By ")
+        append(tr("By ", "作者：", "作者：", "著者："))
         people.forEachIndexed { index, person ->
             if (index > 0) append(", ")
             val name = person.name.trim()

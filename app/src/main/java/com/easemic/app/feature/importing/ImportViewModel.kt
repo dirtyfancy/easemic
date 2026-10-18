@@ -20,6 +20,7 @@ import com.easemic.app.model.SourceId
 import com.easemic.app.model.WorkRequestId
 import com.easemic.app.storage.GrantedUri
 import com.easemic.app.work.ScanWorkScheduler
+import com.easemic.app.i18n.tr
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -464,19 +465,54 @@ class ImportViewModel(
     fun showNotice(value: ImportNotice) {
         notice.value = when (value) {
             ImportNotice.AuthorizationFailed ->
-                "Could not keep read access. Choose the folder or archive again."
+                tr(
+                    "Could not keep read access. Choose the folder or archive again.",
+                    "无法保留读取权限。请重新选择文件夹或压缩包。",
+                    "無法保留讀取權限。請重新選擇資料夾或壓縮檔。",
+                    "読み取り権限を維持できませんでした。フォルダまたはアーカイブをもう一度選択してください。",
+                )
             ImportNotice.SchedulingFailed ->
-                "The rescan did not start. Pull down to try again."
+                tr(
+                    "The rescan did not start. Pull down to try again.",
+                    "重新扫描未开始。下拉重试。",
+                    "重新掃描未開始。下拉重試。",
+                    "再スキャンを開始できませんでした。下に引っ張って再試行してください。",
+                )
             ImportNotice.ReauthorizationFailed ->
-                "Could not prepare reauthorization. Try again."
+                tr(
+                    "Could not prepare reauthorization. Try again.",
+                    "无法准备重新授权。请重试。",
+                    "無法準備重新授權。請重試。",
+                    "再認証の準備ができませんでした。再試行してください。",
+                )
             ImportNotice.GrantReleaseFailed ->
-                "Android kept the folder access. Nothing was changed."
+                tr(
+                    "Android kept the folder access. Nothing was changed.",
+                    "Android 保留了文件夹访问权限。没有任何更改。",
+                    "Android 保留了資料夾存取權限。沒有任何變更。",
+                    "Android がフォルダへのアクセスを保持しました。変更はありません。",
+                )
             is ImportNotice.BackgroundCancellationFailed ->
-                "Stopped watching ${value.folderName}. Its scan stops at the next step."
+                tr(
+                    "Stopped watching ${value.folderName}. Its scan stops at the next step.",
+                    "已停止监视 ${value.folderName}。扫描会在下一步停止。",
+                    "已停止監視 ${value.folderName}。掃描會在下一步停止。",
+                    "${value.folderName} の監視を停止しました。スキャンは次の区切りで停止します。",
+                )
             is ImportNotice.StopWatchingFailed ->
-                "Could not stop watching ${value.folderName}. Try again."
+                tr(
+                    "Could not stop watching ${value.folderName}. Try again.",
+                    "无法停止监视 ${value.folderName}。请重试。",
+                    "無法停止監視 ${value.folderName}。請重試。",
+                    "${value.folderName} の監視を停止できませんでした。再試行してください。",
+                )
             is ImportNotice.UndoStopWatchingFailed ->
-                "Could not bring ${value.folderName} back. Import it again from the shelf."
+                tr(
+                    "Could not bring ${value.folderName} back. Import it again from the shelf.",
+                    "无法恢复 ${value.folderName}。请从书库重新导入。",
+                    "無法恢復 ${value.folderName}。請從書庫重新匯入。",
+                    "${value.folderName} を戻せませんでした。ライブラリからもう一度読み込んでください。",
+                )
         }
     }
 

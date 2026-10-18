@@ -68,6 +68,7 @@ import com.easemic.app.feature.bridge.BridgeOAuthPkceSessionStore
 import com.easemic.app.feature.bridge.BridgeR2BindPresenter
 import com.easemic.app.feature.bridge.BridgeR2BindScreen
 import com.easemic.app.feature.bridge.ByoCloudIo
+import com.easemic.app.feature.bridge.ByoCloudIoCopy
 import com.easemic.app.feature.bridge.ByoCloudIoResult
 import com.easemic.app.feature.bridge.CloudBucketProbe
 import com.easemic.app.feature.bridge.CloudProbeGrace
@@ -306,6 +307,8 @@ import com.easemic.app.feature.update.UpdateOffer
 import com.easemic.app.feature.update.UpdatePrefsStore
 import com.easemic.app.i18n.AppI18n
 import com.easemic.app.i18n.AppLanguageStore
+import com.easemic.app.i18n.AppStrings
+import com.easemic.app.i18n.tr
 import com.easemic.app.i18n.LanguagePreference
 import com.easemic.app.feature.providers.OpdsCatalogConnect
 import com.easemic.app.feature.providers.OpdsCatalogConnectEditResult
@@ -648,7 +651,12 @@ fun PrivateComicLibraryApp(
         ActivityResultContracts.StartActivityForResult(),
     ) { result ->
         result.data?.getStringExtra(ZaimanhuaSignInActivity.SUCCESS_MESSAGE_EXTRA)?.let { message ->
-            android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_SHORT).show()
+            val visibleMessage = if (message == "Signed in to 再漫画") {
+                tr("Signed in to 再漫画", "已登录再漫画", "已登入再漫畫", "再漫画にサインインしました")
+            } else {
+                message
+            }
+            android.widget.Toast.makeText(context, visibleMessage, android.widget.Toast.LENGTH_SHORT).show()
         }
     }
     val launchZaimanhuaSignIn: () -> Unit = {
@@ -862,7 +870,12 @@ fun PrivateComicLibraryApp(
                     onUnavailable = {
                         android.widget.Toast.makeText(
                             context,
-                            "No browser on this device can open Cloudflare.",
+                            tr(
+                                "No browser on this device can open Cloudflare.",
+                                "此设备没有可打开 Cloudflare 的浏览器。",
+                                "此裝置沒有可開啟 Cloudflare 的瀏覽器。",
+                                "この端末には Cloudflare を開けるブラウザがありません。",
+                            ),
                             android.widget.Toast.LENGTH_LONG,
                         ).show()
                     },
@@ -915,7 +928,16 @@ fun PrivateComicLibraryApp(
             launchCustomTab = { CustomTabsIntent.Builder().build().launchUrl(context, it.toUri()) },
             launchView = { context.startActivity(Intent(Intent.ACTION_VIEW, it.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) },
             onUnavailable = {
-                android.widget.Toast.makeText(context, "No browser on this device can open the sign-in page.", android.widget.Toast.LENGTH_LONG).show()
+                android.widget.Toast.makeText(
+                    context,
+                    tr(
+                        "No browser on this device can open the sign-in page.",
+                        "此设备没有可打开登录页面的浏览器。",
+                        "此裝置沒有可開啟登入頁面的瀏覽器。",
+                        "この端末にはサインインページを開けるブラウザがありません。",
+                    ),
+                    android.widget.Toast.LENGTH_LONG,
+                ).show()
             },
         )
     }
@@ -1158,6 +1180,104 @@ fun PrivateComicLibraryApp(
     // Local Detail happens to be open when it lands.
     var remoteDetailStatusAcquisition by remember { mutableStateOf<String?>(null) }
 
+    /** Translate transient detail/snackbar copy at the point it becomes visible.
+     * Routing keys, source titles, and provider error payloads deliberately pass through. */
+    fun localizeRemoteMessage(message: String?): String? {
+        if (message == null) return null
+        return when {
+            message == NewerCloudFormatException.MESSAGE -> tr(
+                message,
+                "此书库由更新版本的 Easemic 修改。请在这台手机上更新应用后继续使用。",
+                "此書庫由較新版本的 Easemic 修改。請在這台手機上更新應用程式後繼續使用。",
+                "このライブラリは新しいバージョンの Easemic で更新されています。この端末のアプリを更新して続行してください。",
+            )
+            message == UnreadableCloudLibraryException.MESSAGE -> tr(
+                message,
+                "此存储桶包含当前应用版本无法读取的数据。清空后重新连接。",
+                "此儲存桶包含目前應用程式版本無法讀取的資料。清空後重新連線。",
+                "このバケットには現在のアプリで読めないデータがあります。空にしてから再接続してください。",
+            )
+            message == LibraryLockedException.MESSAGE -> tr(
+                message,
+                "此书库已加密。请前往“更多 → 云端存储”解锁。",
+                "此書庫已加密。請前往「更多 → 雲端儲存」解鎖。",
+                "このライブラリは暗号化されています。「その他 → クラウドストレージ」でロックを解除してください。",
+            )
+            message == DamagedLibraryLockException.MESSAGE -> tr(
+                message,
+                "此书库的密钥文件已损坏。",
+                "此書庫的金鑰檔案已損壞。",
+                "このライブラリのキーファイルが破損しています。",
+            )
+            message == ByoCloudIoCopy.BIND -> tr(
+                message,
+                "请前往“更多 → 云端存储”连接 Cloudflare，或粘贴 S3 凭据。",
+                "請前往「更多 → 雲端儲存」連接 Cloudflare，或貼上 S3 憑證。",
+                "「その他 → クラウドストレージ」で Cloudflare に接続するか、S3 認証情報を貼り付けてください。",
+            )
+            message == "Collected." -> tr("Collected.", "已收藏。", "已收藏。", "收藏しました。")
+            message == "Removed from Collected." -> tr("Removed from Collected.", "已从收藏中移除。", "已從收藏中移除。", "コレクションから削除しました。")
+            message == "Couldn't remove this series. Still collected — try again." -> tr(
+                message,
+                "无法移除该作品，仍保留在收藏中——请重试。",
+                "無法移除該作品，仍保留在收藏中——請重試。",
+                "この作品を削除できませんでした。コレクションに残っています。再試行してください。",
+            )
+            message == "Couldn't reach your cloud. Still collected — try again." -> tr(
+                message,
+                "无法连接你的云端，仍保留在收藏中——请重试。",
+                "無法連線你的雲端，仍保留在收藏中——請重試。",
+                "クラウドに接続できません。コレクションに残っています。再試行してください。",
+            )
+            message == "Your cloud library is still syncing. Try again in a moment." -> tr(
+                message,
+                "云端书库仍在同步，请稍后重试。",
+                "雲端書庫仍在同步，請稍後重試。",
+                "クラウドライブラリはまだ同期中です。しばらくしてから再試行してください。",
+            )
+            message == "Discard failed: not in Cloud collection." -> tr(message, "丢弃失败：不在云端收藏中。", "丟棄失敗：不在雲端收藏中。", "破棄できませんでした：クラウドコレクションにありません。")
+            message == "Discarding from cloud…" -> tr(message, "正在从云端丢弃…", "正在從雲端丟棄…", "クラウドから破棄中…")
+            message == "Discarded from your cloud storage." -> tr(message, "已从你的云存储中丢弃。", "已從你的雲端儲存中丟棄。", "クラウドストレージから破棄しました。")
+            message == "Restore failed — try again" -> tr(message, "恢复失败——请重试", "恢復失敗——請重試", "復元できませんでした。再試行してください")
+            message == "Delete failed — try again" -> tr(message, "删除失败——请重试", "刪除失敗——請重試", "削除できませんでした。再試行してください")
+            message == "Online read is not available for this source." -> tr(message, "此图源不支持在线阅读。", "此圖源不支援線上閱讀。", "このソースではオンライン閲覧を利用できません。")
+            message == "Opening cloud pages…" -> tr(message, "正在打开云端页面…", "正在開啟雲端頁面…", "クラウドのページを開いています…")
+            message == "Couldn't open the cloud copy of this chapter" -> tr(message, "无法打开此章节的云端副本", "無法開啟此章節的雲端副本", "このチャプターのクラウドコピーを開けませんでした")
+            message == "Couldn't load this page." -> tr(message, "无法加载此页面。", "無法載入此頁面。", "このページを読み込めませんでした。")
+            message == "Source is unavailable." -> tr(message, "图源不可用。", "圖源不可用。", "ソースを利用できません。")
+            message == "Source does not provide serialized chapters." -> tr(message, "此图源不提供分话章节。", "此圖源不提供分話章節。", "このソースはチャプター形式に対応していません。")
+            message == "Unable to load chapters." -> tr(message, "无法加载章节。", "無法載入章節。", "チャプターを読み込めませんでした。")
+            message == "Unable to save series." -> tr(message, "无法保存作品。", "無法儲存作品。", "作品を保存できませんでした。")
+            message == "Wait for the downloads to finish first." -> tr(message, "请先等待下载完成。", "請先等待下載完成。", "先にダウンロードの完了を待ってください。")
+            message == "Wait for the cloud upload to finish first." -> tr(message, "请先等待云端上传完成。", "請先等待雲端上傳完成。", "先にクラウドへのアップロード完了を待ってください。")
+            message == "Saved chapter could not be deleted." || message == "Saved chapters could not be deleted." -> tr(message, "无法删除已保存章节。", "無法刪除已儲存章節。", "保存済みチャプターを削除できませんでした。")
+            message == "No cloud pages" -> tr(message, "没有云端页面", "沒有雲端頁面", "クラウドページがありません")
+            message.startsWith("Couldn't reach ") && message.endsWith(".") -> {
+                val source = message.removePrefix("Couldn't reach ").removeSuffix(".")
+                tr("Couldn't reach $source.", "无法连接 $source。", "無法連線 $source。", "$source に接続できません。")
+            }
+            message.startsWith("Could not collect chapters: ") -> {
+                val reason = localizeRemoteMessage(message.removePrefix("Could not collect chapters: ")).orEmpty()
+                tr("Could not collect chapters: $reason", "无法收藏章节：$reason", "無法收藏章節：$reason", "チャプターをコレクションできませんでした：$reason")
+            }
+            message.startsWith("Collected (bookmark only). ") -> {
+                val rawDetail = message.removePrefix("Collected (bookmark only). ")
+                val detail = if (rawDetail.startsWith("Cloud check failed: ")) {
+                    val code = rawDetail.removePrefix("Cloud check failed: ")
+                    tr("Cloud check failed: $code", "云端检查失败：$code", "雲端檢查失敗：$code", "クラウド確認に失敗：$code")
+                } else {
+                    localizeRemoteMessage(rawDetail).orEmpty()
+                }
+                tr("Collected (bookmark only). $detail", "已收藏（仅书签）。$detail", "已收藏（僅書籤）。$detail", "コレクションしました（ブックマークのみ）。$detail")
+            }
+            message.startsWith("Discard failed: ") -> {
+                val detail = message.removePrefix("Discard failed: ")
+                tr("Discard failed: $detail", "丢弃失败：$detail", "丟棄失敗：$detail", "破棄できませんでした：$detail")
+            }
+            else -> message
+        }
+    }
+
     /**
      * The ONE writer of [remoteDetailStatus]. Setting the message and its owning
      * acquisition together is what stops an unstamped late failure (a discard,
@@ -1167,8 +1287,9 @@ fun PrivateComicLibraryApp(
      * not about a comic some other screen is waiting to hear about.
      */
     fun sayRemote(message: String?, acquisition: String? = null) {
-        remoteDetailStatus = message
-        remoteDetailStatusAcquisition = if (message == null) null else acquisition
+        val visibleMessage = localizeRemoteMessage(message)
+        remoteDetailStatus = visibleMessage
+        remoteDetailStatusAcquisition = if (visibleMessage == null) null else acquisition
     }
     var remoteDetailSourceFamily by remember {
         mutableStateOf(DetailSourceFamily.FRONT_INDEX)
@@ -5837,7 +5958,7 @@ fun PrivateComicLibraryApp(
                             remoteProgress = remoteProgressMap,
                             signedIn = serializedSignedIn,
                         ) else null
-                        val remoteReadLabel = if (serializedDetail) "Read" else detailReadLabel(
+                        val remoteReadLabel = if (serializedDetail) AppStrings.readAction else detailReadLabel(
                             localProgressOrdinal = localProgressOrdinal,
                             remoteProgressOrdinal = RemoteProgressPolicy.keyFor(remoteItem)
                                 ?.let { remoteProgressMap[it] }?.ordinal,
@@ -7666,7 +7787,7 @@ fun PrivateComicLibraryApp(
                             AlertDialog(
                                 onDismissRequest = { legacyBackupResult = null },
                                 text = { Text(line) },
-                                confirmButton = { TextButton(onClick = { legacyBackupResult = null }) { Text("OK") } },
+                                confirmButton = { TextButton(onClick = { legacyBackupResult = null }) { Text(AppStrings.ok) } },
                             )
                         }
                     }
@@ -8340,7 +8461,7 @@ fun PrivateComicLibraryApp(
                                                             outcome.exceptionOrNull(),
                                                         )
                                                         detailStatus =
-                                                            DetailDownloadDeleteCopy.FAILED
+                                                            DetailDownloadDeleteCopy.display(DetailDownloadDeleteCopy.FAILED)
                                                     }
                                                 }
                                             }
@@ -8786,6 +8907,8 @@ private fun CfChallengeBanner(appGraph: AppGraph, context: android.content.Conte
     // Only nhentai jobs ever park on a CF challenge; surface its real name
     // whenever the source is enabled instead of hiding behind a code name.
     val nhentaiEnabled = NhentaiEnableStore(SharedPreferencesMap.from(context)).isEnabled()
+    val sourceLabel = cfChallengeBannerSourceLabel(nhentaiEnabled = nhentaiEnabled)
+    val englishBannerText = sourceLabel + " needs a quick check — tap to solve"
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.errorContainer,
@@ -8797,8 +8920,12 @@ private fun CfChallengeBanner(appGraph: AppGraph, context: android.content.Conte
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                text = cfChallengeBannerSourceLabel(nhentaiEnabled = nhentaiEnabled) +
-                    " needs a quick check — tap to solve",
+                text = tr(
+                    englishBannerText,
+                    "$sourceLabel 需要快速验证 · 点击处理",
+                    "$sourceLabel 需要快速驗證 · 點擊處理",
+                    "$sourceLabel の簡単な確認が必要です · タップして解決",
+                ),
                 color = MaterialTheme.colorScheme.onErrorContainer,
                 modifier = Modifier.weight(1f),
             )
@@ -8807,7 +8934,7 @@ private fun CfChallengeBanner(appGraph: AppGraph, context: android.content.Conte
                     context.startActivity(Intent(context, CloudflareChallengeActivity::class.java))
                 },
             ) {
-                Text("Solve")
+                Text(tr("Solve", "处理", "處理", "解決"))
             }
         }
     }

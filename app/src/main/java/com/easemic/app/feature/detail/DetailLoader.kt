@@ -36,6 +36,7 @@ import com.easemic.app.sync.CloudCollectionKeys
 import com.easemic.app.sync.CloudCollectionStore
 import com.easemic.app.sync.CloudSeriesChapterDescriptor
 import com.easemic.app.sync.CloudSeriesManifest
+import com.easemic.app.i18n.AppStrings
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -210,7 +211,7 @@ class DetailLoader(
                 }
                 if (chapters == null) {
                     stage.sayRemote(
-                        "Source unavailable · showing saved chapters",
+                        AppStrings.chapterStateText("Source unavailable · showing saved chapters"),
                         item.acquisitionUrl,
                     )
                 }
@@ -500,7 +501,7 @@ class DetailLoader(
                                 stage.setChaptersUnavailable(true)
                                 if (stage.snapshot() != null) {
                                     stage.sayRemote(
-                                        "Source unavailable · showing saved chapters",
+                                        AppStrings.chapterStateText("Source unavailable · showing saved chapters"),
                                         item.acquisitionUrl,
                                     )
                                 }

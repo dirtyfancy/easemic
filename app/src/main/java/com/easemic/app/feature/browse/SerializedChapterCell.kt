@@ -44,6 +44,8 @@ import com.easemic.app.ui.library.lucideArrowBigDown
 import com.easemic.app.ui.library.lucideCloud
 import com.easemic.app.ui.theme.QuietShelfColors
 import com.easemic.app.ui.theme.QuietShelfPalette
+import com.easemic.app.i18n.AppStrings
+import com.easemic.app.i18n.tr
 
 internal const val SERIALIZED_CHAPTER_CELL_TAG = "serialized-chapter-cell-"
 
@@ -92,11 +94,12 @@ internal fun SerializedChapterCell(
         }
     }
     val clickLabel = if (selection != null) {
-        if (selection.selected) "Deselect chapter" else "Select chapter"
+        if (selection.selected) tr("Deselect chapter", "取消选择章节", "取消選取章節", "チャプターの選択を解除")
+        else tr("Select chapter", "选择章节", "選取章節", "チャプターを選択")
     } else when (presentation.tap) {
-        ChapterCellTap.READ -> "Read chapter"
-        ChapterCellTap.MENU -> "Chapter options"
-        ChapterCellTap.SIGN_IN -> "Sign in to read"
+        ChapterCellTap.READ -> tr("Read chapter", "阅读章节", "閱讀章節", "チャプターを読む")
+        ChapterCellTap.MENU -> tr("Chapter options", "章节选项", "章節選項", "チャプターのオプション")
+        ChapterCellTap.SIGN_IN -> AppStrings.signIn + tr(" to read", "后阅读", "後閱讀", "して読む")
     }
     Box(modifier) {
         Box(
@@ -111,7 +114,7 @@ internal fun SerializedChapterCell(
                     enabled = selection?.enabled != false,
                     role = Role.Button,
                     onClickLabel = clickLabel,
-                    onLongClickLabel = "Chapter options",
+                    onLongClickLabel = tr("Chapter options", "章节选项", "章節選項", "チャプターのオプション"),
                     onLongClick = if (selection == null) ({ onMenu(row.chapterId) }) else null,
                     onClick = click,
                 )
@@ -162,9 +165,9 @@ internal fun SerializedChapterCell(
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp))
             presentation.actions.forEach { action ->
                 DropdownMenuItem(text = { Text(when (action) {
-                    ChapterCellAction.RETRY -> "Retry"
-                    ChapterCellAction.DELETE_SAVED_COPY -> "Delete saved copy"
-                    ChapterCellAction.READ_ONLINE -> "Read online"
+                    ChapterCellAction.RETRY -> AppStrings.retry
+                    ChapterCellAction.DELETE_SAVED_COPY -> tr("Delete saved copy", "删除已保存副本", "刪除已儲存副本", "保存済みコピーを削除")
+                    ChapterCellAction.READ_ONLINE -> tr("Read online", "在线阅读", "線上閱讀", "オンラインで読む")
                 }) }, onClick = {
                     onMenu(null)
                     when (action) {

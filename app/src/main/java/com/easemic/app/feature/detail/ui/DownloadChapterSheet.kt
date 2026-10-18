@@ -54,6 +54,8 @@ import com.easemic.app.feature.browse.downloadPickerNextIds
 import com.easemic.app.feature.browse.downloadPickerSelectable
 import com.easemic.app.feature.browse.downloadPickerUnreadIds
 import com.easemic.app.ui.components.PclButton
+import com.easemic.app.i18n.AppStrings
+import com.easemic.app.i18n.tr
 import com.easemic.app.ui.theme.PclSpacing
 import com.easemic.app.ui.theme.QuietShelfPalette
 
@@ -109,12 +111,12 @@ internal fun DownloadChapterSheet(
                 .testTag("download-chapter-sheet"),
         ) {
             Text(
-                "Download to this phone",
+                tr("Download to this phone", "下载到本机", "下載到本機", "この端末にダウンロード"),
                 style = MaterialTheme.typography.titleMedium,
                 color = palette.ink,
             )
             Text(
-                "Saved chapters stay on this phone · not uploaded",
+                tr("Saved chapters stay on this phone · not uploaded", "已保存的章节会留在本机 · 不会上传", "已儲存的章節會留在本機 · 不會上傳", "保存したチャプターは端末に残ります · アップロードされません"),
                 style = MaterialTheme.typography.bodySmall,
                 color = palette.muted,
             )
@@ -125,22 +127,22 @@ internal fun DownloadChapterSheet(
                     .padding(top = PclSpacing.Small, bottom = PclSpacing.Small),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                PresetChip("All ${allIds.size}", selected = activePreset == DownloadPresetChip.ALL,
+                PresetChip(tr("All ${allIds.size}", "全部 ${allIds.size}", "全部 ${allIds.size}", "すべて ${allIds.size}"), selected = activePreset == DownloadPresetChip.ALL,
                     tag = "download-preset-all") {
                     activePreset = DownloadPresetChip.ALL
                     selection = allIds.toSet()
                 }
-                PresetChip("Unread ${unreadIds.size}", selected = activePreset == DownloadPresetChip.UNREAD,
+                PresetChip(tr("Unread ${unreadIds.size}", "未读 ${unreadIds.size}", "未讀 ${unreadIds.size}", "未読 ${unreadIds.size}"), selected = activePreset == DownloadPresetChip.UNREAD,
                     tag = "download-preset-unread") {
                     activePreset = DownloadPresetChip.UNREAD
                     selection = unreadIds.toSet()
                 }
-                PresetChip("Next $DOWNLOAD_PRESET_NEXT_COUNT", selected = activePreset == DownloadPresetChip.NEXT,
+                PresetChip(tr("Next $DOWNLOAD_PRESET_NEXT_COUNT", "接下来 $DOWNLOAD_PRESET_NEXT_COUNT", "接下來 $DOWNLOAD_PRESET_NEXT_COUNT", "次の $DOWNLOAD_PRESET_NEXT_COUNT"), selected = activePreset == DownloadPresetChip.NEXT,
                     tag = "download-preset-next") {
                     activePreset = DownloadPresetChip.NEXT
                     applyNext(DOWNLOAD_PRESET_NEXT_COUNT)
                 }
-                PresetChip("Custom…", selected = customOpen, tag = "download-preset-custom") {
+                PresetChip(tr("Custom…", "自定义…", "自訂…", "カスタム…"), selected = customOpen, tag = "download-preset-custom") {
                     activePreset = DownloadPresetChip.CUSTOM
                     customOpen = !customOpen
                     if (customOpen) applyNext(customCount)
@@ -188,7 +190,7 @@ internal fun DownloadChapterSheet(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    "${selection.size} selected",
+                    tr("${selection.size} selected", "已选择 ${selection.size} 项", "已選取 ${selection.size} 項", "${selection.size} 件を選択中"),
                     style = MaterialTheme.typography.bodyMedium,
                     color = palette.ink,
                     modifier = Modifier.testTag("download-selected-count"),
@@ -205,7 +207,7 @@ internal fun DownloadChapterSheet(
                     enabled = selection.isNotEmpty(),
                     modifier = Modifier.testTag("download-confirm"),
                 ) {
-                    Text(if (selection.isEmpty()) "Download" else "Download ${selection.size}")
+                    Text(if (selection.isEmpty()) tr("Download", "下载", "下載", "ダウンロード") else tr("Download ${selection.size}", "下载 ${selection.size}", "下載 ${selection.size}", "${selection.size} 件をダウンロード"))
                 }
             }
         }
@@ -261,12 +263,12 @@ private fun CustomCountStepper(
             modifier = Modifier
                 .width(48.dp)
                 .testTag("download-custom-value")
-                .semantics { contentDescription = "Chapters to download" },
+                .semantics { contentDescription = tr("Chapters to download", "要下载的章节", "要下載的章節", "ダウンロードするチャプター") },
         )
         StepperButton("＋1", "download-custom-plus1", enabled = selectableCount > 0) { onChange(count + 1) }
         StepperButton("＋10", "download-custom-plus10", enabled = selectableCount > 0) { onChange(count + 10) }
         Text(
-            "next $count after Continue",
+            tr("next $count after Continue", "从“继续”开始的接下来 $count 个", "從「繼續」開始的接下來 $count 個", "「続き」から次の $count 件"),
             style = MaterialTheme.typography.bodySmall,
             color = palette.muted,
             maxLines = 1,
@@ -336,7 +338,7 @@ private fun DownloadPickerGroup(
                 },
                 modifier = Modifier.testTag("download-select-all-$groupIndex"),
             ) {
-                Text("Select all", fontSize = 12.sp)
+                Text(AppStrings.selectAll, fontSize = 12.sp)
             }
         }
         rows.chunked(4).forEach { cells ->

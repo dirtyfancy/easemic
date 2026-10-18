@@ -24,6 +24,7 @@ import com.easemic.app.feature.detail.model.DetailTags
 import com.easemic.app.feature.detail.model.SourceDetailProfile
 import com.easemic.app.feature.source.valueOrNull
 import com.easemic.app.ui.theme.QuietShelfPalette
+import com.easemic.app.i18n.AppStrings
 
 /**
  * One detail page for every source (skeleton spec §2.1 order, plan decision 1).
@@ -113,7 +114,7 @@ private fun SkeletonSynopsis(detail: ComicDetail, palette: QuietShelfPalette, me
         )
         if (synopsisOverflow || synopsisExpanded) {
             Text(
-                if (synopsisExpanded) "Show less" else "Show more",
+                if (synopsisExpanded) AppStrings.showLess else AppStrings.showMore,
                 modifier = Modifier
                     .testTag("detail-synopsis-more")
                     .clickable { synopsisExpanded = !synopsisExpanded }

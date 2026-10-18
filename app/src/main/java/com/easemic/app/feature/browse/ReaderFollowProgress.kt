@@ -2,6 +2,7 @@ package com.easemic.app.feature.browse
 
 import com.easemic.app.feature.download.FollowProgress
 import com.easemic.app.feature.reader.ReaderPageLoadPresentation
+import com.easemic.app.i18n.tr
 
 /**
  * Owner-approved reader copy for a page resolving through a download lane
@@ -9,10 +10,17 @@ import com.easemic.app.feature.reader.ReaderPageLoadPresentation
  */
 fun readerFollowLabel(progress: FollowProgress): String {
     val expectedBytes = progress.expectedBytes
-    if (expectedBytes == null || expectedBytes <= 0L) return "Downloading…"
+    if (expectedBytes == null || expectedBytes <= 0L) {
+        return tr("Downloading…", "正在下载…", "正在下載…", "ダウンロード中…")
+    }
     // 100% only shows once the page is actually ready to render.
     val percent = ((progress.bytes * 100L) / expectedBytes).coerceIn(0L, 99L)
-    return "Downloading · $percent%"
+    return tr(
+        "Downloading · $percent%",
+        "正在下载 · $percent%",
+        "正在下載 · $percent%",
+        "ダウンロード中 · $percent%",
+    )
 }
 
 /**
