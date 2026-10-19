@@ -3888,7 +3888,8 @@ class AppGraph private constructor(
     }
 
 
-    private fun resolveOpdsAuthorization(acquisitionUrl: String): String? {
+    /** Basic credentials of the connected OPDS catalog that owns [acquisitionUrl] (strict authority match), or null. */
+    fun resolveOpdsAuthorization(acquisitionUrl: String): String? {
         val providers = opdsProviderStore.readAll()
         val match = providers.firstOrNull { provider ->
             // #C12 audit H3: an authority (scheme+host+port) or path-prefix

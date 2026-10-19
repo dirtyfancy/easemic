@@ -54,5 +54,6 @@ class PrivateComicLibraryApplication :
             diskCacheMaxSizeBytes = com.easemic.app.storage.CacheBudget.COIL_PARTITION_BYTES,
             diskCache = graph.coilDiskCache.diskCache,
             coverInterceptor = graph.jmCoverInterceptor,
+            authorizationFor = { url -> graph.resolveOpdsAuthorization(url) },
         )
 }

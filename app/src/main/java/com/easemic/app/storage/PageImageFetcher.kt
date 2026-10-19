@@ -255,11 +255,13 @@ internal fun buildPageImageLoader(
     diskCacheMaxSizeBytes: Long = CacheBudget.DEFAULT_BYTES,
     diskCache: DiskCache? = null,
     coverInterceptor: okhttp3.Interceptor? = null,
+    authorizationFor: (String) -> String? = { null },
 ): ImageLoader {
     val networkClient = pageImageNetworkClient(
         sessionCookie = sessionCookie,
         progressTracker = progressTracker,
         coverInterceptor = coverInterceptor,
+        authorizationFor = authorizationFor,
     )
     val ownedDiskCache = diskCache ?: DiskCache.Builder()
         .directory(File(context.cacheDir, "coil3_disk_cache").apply { mkdirs() }.absolutePath.toPath())
@@ -302,6 +304,11 @@ internal fun pageImageNetworkClient(
     sessionCookie: () -> String?,
     progressTracker: ReaderImageProgressTracker = ReaderImageProgressTracker.shared,
     coverInterceptor: okhttp3.Interceptor? = null,
+    /**
+     * Basic credentials of the OPDS catalog that owns a URL, or null. Komga serves cover thumbnails only with them.
+     * Added before OkHttp follows redirects, and OkHttp drops Authorization on a redirect to another host.
+     */
+    authorizationFor: (String) -> String? = { null },
 ): OkHttpClient =
     SourceHttp.newBuilder()
         // Check each actual wire host, including redirects, before taking a cover permit.
@@ -313,6 +320,9 @@ internal fun pageImageNetworkClient(
                 .header("Accept", "image/*,*/*")
             sessionCookieForImageHost(request.url.host, sessionCookie())?.let {
                 builder.header("Cookie", it)
+            }
+            if (request.header("Authorization") == null) {
+                authorizationFor(request.url.toString())?.let { builder.header("Authorization", it) }
             }
             chain.proceed(builder.build())
         }
