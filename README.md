@@ -15,9 +15,14 @@ A native Android comic and manga reader that collects galleries and serialized s
 ---
 
 <p align="center">
-  <img src="docs/screenshots/browse-serialized.png" width="31%" alt="Browse serialized manga" />
-  <img src="docs/screenshots/detail-chapters.png" width="31%" alt="Series detail and chapters" />
-  <img src="docs/screenshots/cloud-storage-picker.png" width="31%" alt="Cloud storage setup" />
+  <a href="https://easemic.com/#film"><img src="docs/film-poster.jpg" width="90%" alt="Watch the 25-second Easemic film" /></a>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/library-shelf.png" width="23%" alt="Library shelf" />
+  <img src="docs/screenshots/browse-serialized.png" width="23%" alt="Browse serialized manga" />
+  <img src="docs/screenshots/detail-chapters.png" width="23%" alt="Series detail and chapters" />
+  <img src="docs/screenshots/cloud-storage-picker.png" width="23%" alt="Cloud storage setup" />
 </p>
 
 ## Why Easemic?
