@@ -6,6 +6,8 @@
 
 A native Android comic and manga reader that collects galleries and serialized series into cloud storage you own—and streams every page on demand.
 
+[![Easemic on AlternativeTo](https://alternativeto.net/static/badges/badge-compact-color.svg)](https://alternativeto.net/software/easemic/about/)
+
 [**Website**](https://easemic.com) · [**Download APK**](https://easemic.com/api/app/download) · [**Cloud Speed Benchmarks**](https://easemic.com/guides/cloud-reading-speed/) · [**Storage Guides**](https://easemic.com/guides/) · [**Get an API key**](https://easemic.com/guides/cloud-storage-api-key/)
 
 </div>
