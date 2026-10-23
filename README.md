@@ -28,7 +28,7 @@
 > **18+** 本项目包含成人图站连接能力，仅供成年人管理自己的个人漫画馆藏。仓库不含任何媒体文件或站点数据；连接外部站点需自备相应账号与网络访问权限。
 
 <p align="center">
-  <a href="https://easemic.com/#film"><img src="docs/film-poster.jpg" width="92%" alt="观看 25 秒 Easemic 介绍视频" /></a>
+  <a href="https://easemic.com/zh/#film"><img src="docs/film-zh.gif" width="92%" alt="观看 25 秒 Easemic 中文演示动画（点击打开带配乐高清版）" /></a>
 </p>
 
 ## 能做什么

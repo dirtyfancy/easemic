@@ -28,7 +28,7 @@
 > **18+** Built for adults managing their own manga and gallery collections. This repository contains no media or site data; connecting to external catalogs requires your own accounts and network access.
 
 <p align="center">
-  <a href="https://easemic.com/#film"><img src="docs/film-poster.jpg" width="92%" alt="Watch the 25-second Easemic film" /></a>
+  <a href="https://easemic.com/#film"><img src="docs/film-en.gif" width="92%" alt="Watch the 25-second Easemic demo (click for full HD with audio)" /></a>
 </p>
 
 ## Features
